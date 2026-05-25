@@ -1,12 +1,12 @@
-# E-Commerce Orders: Multi-Table SQL Analysis
+# E-Commerce Orders: SQL + Excel Analysis
 
-**Tools:** MySQL &nbsp;|&nbsp; **Dataset:** [Kaggle — E-Commerce Sales Dataset](https://www.kaggle.com/datasets/benroshan/ecommerce-data) &nbsp;|&nbsp; **Author:** Luka Kintsurashvili
+**Tools:** MySQL, Excel &nbsp;|&nbsp; **Dataset:** [Kaggle — E-Commerce Sales Dataset](https://www.kaggle.com/datasets/benroshan/ecommerce-data) &nbsp;|&nbsp; **Author:** Luka Kintsurashvili
 
 ---
 
 ## Overview
 
-An end-to-end SQL analysis of an e-commerce business across 3 relational tables. I explored customer spending behavior, product profitability, regional performance, and target attainment — uncovering a data quality issue along the way that would have silently skewed the results.
+An end-to-end analysis of an e-commerce business — starting with raw data across 3 relational SQL tables, and ending with an Excel dashboard summarizing the key findings. I explored customer spending behavior, product profitability, regional performance, and target attainment — uncovering a data quality issue along the way that would have silently skewed the results.
 
 ---
 
@@ -55,6 +55,14 @@ ORDER BY total_spent DESC
 LIMIT 5;
 ```
 
+| Customer | Total Spent |
+|---|---|
+| Yaanvi | $9,177 |
+| Pooja | $9,030 |
+| Abhishek | $8,135 |
+| Surabhi | $6,889 |
+| Soumya | $6,869 |
+
 ---
 
 ### Which product category is most profitable?
@@ -65,6 +73,12 @@ FROM order_details
 GROUP BY Category
 ORDER BY total_profit DESC;
 ```
+
+| Category | Actual Sales | Target | Difference |
+|---|---|---|---|
+| Electronics | $1,983,204 | $39,732,000 | -$37,748,796 |
+| Clothing | $1,668,648 | $165,126,000 | -$163,457,352 |
+| Furniture | $1,526,172 | $32,294,700 | -$30,768,528 |
 
 ---
 
@@ -77,6 +91,14 @@ JOIN `list of orders` ON `Order ID` = Order_ID
 GROUP BY State
 ORDER BY total_amount DESC;
 ```
+
+| State | Revenue |
+|---|---|
+| Madhya Pradesh | $105,140 |
+| Maharashtra | $95,348 |
+| Delhi | $22,531 |
+| Uttar Pradesh | $22,359 |
+| Rajasthan | $21,149 |
 
 ---
 
@@ -95,7 +117,7 @@ JOIN sales_target ON order_details.Category = sales_target.Category
 GROUP BY sales_target.Category;
 ```
 
-A positive `difference` means the category beat its target. Negative means it fell short.
+All three categories missed their targets significantly — most notably Clothing, which fell short by over $163M. This suggests the targets in the dataset may be set at an annual scale while actual sales reflect a shorter period.
 
 ---
 
@@ -110,17 +132,36 @@ HAVING order_count > 2
 ORDER BY order_count DESC;
 ```
 
+| Customer | Orders |
+|---|---|
+| Shreya | 6 |
+| Abhishek | 5 |
+| Pooja | 5 |
+| Shubham | 5 |
+| Priyanka | 4 |
+
+---
+
+## Excel Dashboard
+
+After extracting the data via SQL, I exported the results into Excel and built a summary dashboard with pivot tables covering:
+
+- **Top customers by spend**
+- **Revenue by state** (ranked)
+- **Actual vs target by category**
+- **Repeat buyer leaderboard**
+
 ---
 
 ## Key Findings
 
 | Area | Finding |
 |---|---|
-| Top spender | Madhav ($2,520 total) |
-| Most profitable category | Clothing ($4,728 profit) |
-| Top state by revenue | Madhya Pradesh |
-| Sales vs target | Electronics missed target by the largest margin |
-| Repeat buyers | 4 customers placed more than 2 orders |
+| Top spender | Yaanvi ($9,177) |
+| Most revenue by region | Madhya Pradesh ($105,140) |
+| All categories | Missed sales targets |
+| Largest target gap | Clothing (-$163M) |
+| Most repeat orders | Shreya (6 orders) |
 
 ---
 
